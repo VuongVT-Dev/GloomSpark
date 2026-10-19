@@ -103,3 +103,36 @@ GloomSpark/
 - **Giai đoạn 3:** 8 Ô Cổ Vật, Rương Báu & Kích hoạt Hiệu ứng Bộ (Set Bonus).
 - **Giai đoạn 4:** Hệ thống Chủng tộc, Class & Cơ chế Thức Tỉnh Bậc 2.
 - **Giai đoạn 5:** Sảnh Lobby, Nâng cấp Vĩnh viễn (Talent Tree) & Mở khóa Map 2 sau khi thắng Map 1.
+
+---
+
+## 🌿 7. Quy ước Quản lý Git & Đặt tên Nhánh (Git Workflow & Branching Conventions)
+
+Dự án áp dụng mô hình phân nhánh chuẩn để đảm bảo mã nguồn luôn rõ ràng, ổn định và dễ quản lý:
+
+### 7.1 Cấu trúc các nhánh chính (Core Branches)
+- `main`: Nhánh production, chứa mã nguồn ổn định nhất đã kiểm thử và có thể chơi được bất cứ lúc nào.
+- `develop`: Nhánh phát triển chính, nơi tích hợp các tính năng mới trước khi phát hành phiên bản.
+
+### 7.2 Quy ước đặt tên nhánh (Branch Naming Convention)
+Định dạng: `<tiền-tố>/<mô-tả-ngắn-gọn-kebab-case>`
+
+| Tiền tố nhánh | Mục đích sử dụng | Ví dụ thực tế trong GloomSpark |
+| :--- | :--- | :--- |
+| `feature/` | Phát triển tính năng mới | `feature/phase1-core-loop`, `feature/class-system`, `feature/magic-fusion` |
+| `fix/` | Sửa lỗi / Bug fix trong quá trình phát triển | `fix/collision-fps-drop`, `fix/levelup-pause-bug` |
+| `hotfix/` | Vá lỗi khẩn cấp trực tiếp trên nhánh `main` | `hotfix/gameover-black-screen` |
+| `refactor/` | Tái cấu trúc mã nguồn, dọn code (không đổi tính năng) | `refactor/spatial-grid-engine`, `refactor/stat-calculator` |
+| `perf/` | Tối ưu hóa hiệu năng, giảm lag, tăng FPS | `perf/object-pooling-projectiles`, `perf/canvas-batch-rendering` |
+| `balance/` | Cân bằng chỉ số game (quái, class, kỹ năng) | `balance/nerf-demon-lifesteal`, `balance/buff-enemy-wave3` |
+| `docs/` | Cập nhật tài liệu, README, hướng dẫn kỹ thuật | `docs/update-git-conventions`, `docs/add-class-mechanics` |
+
+### 7.3 Quy ước Đặt tên Commit (Conventional Commits)
+Cấu trúc chuẩn: `<type>: <mô tả ngắn bằng tiếng Anh hoặc tiếng Việt>`
+- `feat: add spatial hash grid for 60fps swarm collisions`
+- `feat: implement demon class with lifesteal passive`
+- `fix: prevent exp gems from flying outside canvas view`
+- `refactor: extract BaseSpell abstract class into separate module`
+- `perf: pool enemy instances to avoid garbage collection stutter`
+- `balance: adjust enemy scaling curve formula for minute 5 to 10`
+- `docs: add git branching guidelines to README`
