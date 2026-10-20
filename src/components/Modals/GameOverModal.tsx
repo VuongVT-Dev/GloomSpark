@@ -27,7 +27,7 @@ export const GameOverModal: React.FC<GameOverModalProps> = ({
           <div className="skull-icon-wrapper">
             <Skull size={48} className="text-rose-500 animate-pulse" />
           </div>
-          <h1 className="gameover-title">LỤI TÀN BÓNG TỐI</h1>
+          <h1 className="gameover-title">LỤI TÀN <br /> TRONG BÓNG TỐI</h1>
           <p className="gameover-subtitle">Tia sáng ma thuật của bạn đã bị màn đêm nuốt chửng...</p>
         </div>
 
