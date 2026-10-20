@@ -1,4 +1,5 @@
 import { Particle } from './Particle';
+import type { Enemy } from './Enemy';
 
 export class Projectile {
   public x: number;
@@ -26,6 +27,13 @@ export class Projectile {
 
     this.vx = (dx / dist) * this.speed;
     this.vy = (dy / dist) * this.speed;
+  }
+
+  /**
+   * Hook xử lý khi đạn va chạm vào quái vật (dành cho các lớp con như IceArrow ghi đè)
+   */
+  onHit(_enemy: Enemy): void {
+    // Mặc định không có hiệu ứng đặc biệt
   }
 
   update(deltaTime: number, particles: Particle[]) {
