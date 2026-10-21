@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Outfit:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Outfit:wght@400;500;600;700&display=swap");
 
 * {
   box-sizing: border-box;
@@ -6,13 +6,18 @@
   padding: 0;
 }
 
-body, html {
+body,
+html {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
   background-color: #05050a;
   color: #f1f5f9;
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    "Outfit",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
   user-select: none;
 }
 
@@ -72,7 +77,9 @@ body, html {
   padding: 12px 24px;
 }
 
-.hud-stats-group, .hud-center-group, .hud-controls-group {
+.hud-stats-group,
+.hud-center-group,
+.hud-controls-group {
   display: flex;
   align-items: center;
   gap: 16px;
@@ -178,8 +185,12 @@ body, html {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .modal-content {
@@ -187,7 +198,9 @@ body, html {
   border: 1px solid rgba(56, 189, 248, 0.25);
   border-radius: 20px;
   padding: 36px 40px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(56, 189, 248, 0.15);
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.8),
+    0 0 30px rgba(56, 189, 248, 0.15);
   text-align: center;
   max-width: 900px;
   width: 90%;
@@ -195,8 +208,14 @@ body, html {
 }
 
 @keyframes slideUp {
-  from { transform: translateY(30px) scale(0.96); opacity: 0; }
-  to { transform: translateY(0) scale(1); opacity: 1; }
+  from {
+    transform: translateY(30px) scale(0.96);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
 }
 
 .levelup-subtitle {
@@ -209,7 +228,7 @@ body, html {
 }
 
 .levelup-title {
-  font-family: 'Cinzel', serif;
+  font-family: "Cinzel", serif;
   font-size: 34px;
   font-weight: 800;
   color: #ffffff;
@@ -247,7 +266,9 @@ body, html {
 .upgrade-card:hover {
   transform: translateY(-6px);
   border-color: #38bdf8;
-  box-shadow: 0 12px 30px rgba(2, 132, 199, 0.35), 0 0 20px rgba(56, 189, 248, 0.2);
+  box-shadow:
+    0 12px 30px rgba(2, 132, 199, 0.35),
+    0 0 20px rgba(56, 189, 248, 0.2);
   background: rgba(30, 41, 59, 0.9);
 }
 
@@ -278,10 +299,25 @@ body, html {
   border-radius: 9999px;
 }
 
-.rarity-badge.common { background: rgba(148, 163, 184, 0.2); color: #cbd5e1; }
-.rarity-badge.rare { background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); }
-.rarity-badge.epic { background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.4); }
-.rarity-badge.legendary { background: rgba(245, 158, 11, 0.25); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.5); }
+.rarity-badge.common {
+  background: rgba(148, 163, 184, 0.2);
+  color: #cbd5e1;
+}
+.rarity-badge.rare {
+  background: rgba(56, 189, 248, 0.2);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.4);
+}
+.rarity-badge.epic {
+  background: rgba(168, 85, 247, 0.2);
+  color: #c084fc;
+  border: 1px solid rgba(168, 85, 247, 0.4);
+}
+.rarity-badge.legendary {
+  background: rgba(245, 158, 11, 0.25);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.5);
+}
 
 .card-title {
   font-size: 18px;
@@ -327,12 +363,13 @@ body, html {
 }
 
 .gameover-title {
-  font-family: 'Cinzel', serif;
+  font-family: "Cinzel", serif;
   font-size: 38px;
   font-weight: 900;
   color: #ef4444;
   text-shadow: 0 0 25px rgba(239, 68, 68, 0.7);
-  margin-bottom: 6px;
+  height: 70px;
+  line-height: normal;
 }
 
 .gameover-subtitle {
@@ -397,7 +434,7 @@ body, html {
 }
 
 .pause-title {
-  font-family: 'Cinzel', serif;
+  font-family: "Cinzel", serif;
   font-size: 32px;
   font-weight: 800;
   color: #f8fafc;
