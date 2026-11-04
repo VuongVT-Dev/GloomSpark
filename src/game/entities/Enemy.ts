@@ -17,6 +17,8 @@ export class Enemy {
   public color: string;
   public eyeColor: string;
   public alive: boolean = true;
+  public slowTimer: number = 0;
+  public slowFactor: number = 0;
   private flashTimer: number = 0;
   private knockbackVx: number = 0;
   private knockbackVy: number = 0;
@@ -86,22 +88,44 @@ export class Enemy {
     }
   }
 
+  /**
+   * Áp dụng hiệu ứng làm chậm (Slow debuff)
+   * @param duration Thời gian làm chậm tính bằng giây
+   * @param factor Phần trăm làm chậm (ví dụ: 0.4 = giảm 40% tốc chạy)
+   */
+  applySlow(duration: number, factor: number) {
+    this.slowTimer = Math.max(this.slowTimer, duration);
+    this.slowFactor = Math.min(0.7, Math.max(this.slowFactor, factor)); // Tối đa làm chậm 70%
+  }
+
   update(deltaTime: number, playerX: number, playerY: number) {
     if (this.flashTimer > 0) {
       this.flashTimer -= deltaTime;
+    }
+
+    // Xử lý hiệu ứng làm chậm
+    if (this.slowTimer > 0) {
+      this.slowTimer -= deltaTime;
+      if (this.slowTimer <= 0) {
+        this.slowFactor = 0;
+      }
     }
 
     // Giảm dần lực đẩy lùi
     this.knockbackVx *= 0.88;
     this.knockbackVy *= 0.88;
 
-    // Di chuyển thẳng về phía người chơi
+    // Di chuyển thẳng về phía người chơi (áp dụng tốc độ sau khi bị làm chậm)
+    const effectiveSpeed = this.slowTimer > 0
+      ? this.speed * (1 - this.slowFactor)
+      : this.speed;
+
     const dx = playerX - this.x;
     const dy = playerY - this.y;
     const dist = Math.hypot(dx, dy) || 1;
 
-    this.x += (dx / dist) * this.speed * deltaTime + this.knockbackVx * deltaTime;
-    this.y += (dy / dist) * this.speed * deltaTime + this.knockbackVy * deltaTime;
+    this.x += (dx / dist) * effectiveSpeed * deltaTime + this.knockbackVx * deltaTime;
+    this.y += (dy / dist) * effectiveSpeed * deltaTime + this.knockbackVy * deltaTime;
   }
 
   draw(ctx: CanvasRenderingContext2D, cameraX: number, cameraY: number) {
@@ -116,10 +140,20 @@ export class Enemy {
     ctx.arc(screenX, screenY, this.radius, 0, Math.PI * 2);
     ctx.fill();
 
-    // Viền bóng đêm
-    ctx.strokeStyle = '#020617';
-    ctx.lineWidth = 2;
-    ctx.stroke();
+    // Hiệu ứng băng giá khi bị làm chậm
+    if (this.slowTimer > 0) {
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.85)';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.25)';
+      ctx.fill();
+    } else {
+      // Viền bóng đêm thông thường
+      ctx.strokeStyle = '#020617';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
 
     // Mắt quái vật phát sáng rực lửa / quỷ dị
     ctx.fillStyle = this.eyeColor;

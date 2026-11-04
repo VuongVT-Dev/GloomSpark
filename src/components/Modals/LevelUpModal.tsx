@@ -1,6 +1,6 @@
 import React from 'react';
 import type { UpgradeCard } from '../../types/game';
-import { Sparkles, Zap, Wand2, Footprints, Magnet, Heart } from 'lucide-react';
+import { Sparkles, Zap, Wand2, Footprints, Magnet, Heart, Snowflake } from 'lucide-react';
 
 interface LevelUpModalProps {
   level: number;
@@ -16,6 +16,7 @@ const getIcon = (iconName: string) => {
     case 'Footprints': return <Footprints size={28} className="card-icon text-emerald-400" />;
     case 'Magnet': return <Magnet size={28} className="card-icon text-blue-400" />;
     case 'Heart': return <Heart size={28} className="card-icon text-rose-400" />;
+    case 'Snowflake': return <Snowflake size={28} className="card-icon text-cyan-300" />;
     default: return <Sparkles size={28} className="card-icon text-purple-400" />;
   }
 };

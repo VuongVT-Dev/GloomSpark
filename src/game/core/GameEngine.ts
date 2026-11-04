@@ -84,6 +84,7 @@ export class GameEngine {
     this.particles = [];
     this.floatingTexts = [];
     this.player = new Player(this.camera.worldWidth / 2, this.camera.worldHeight / 2);
+    this.spellManager.initDefaultSpells();
     this.spawnTimer = 0;
     this.spawnInterval = 0.8;
     this.resume();
@@ -146,8 +147,14 @@ export class GameEngine {
       }
     }
 
-    // 5. Cập nhật Kỹ năng tự động bắn
-    this.spellManager.update(deltaTime, this.player, this.enemies, this.projectiles);
+    // 5. Cập nhật Kỹ năng tự động bắn (BaseSpell polymorph)
+    this.spellManager.update(deltaTime, this.player, {
+      projectiles: this.projectiles,
+      particles: this.particles,
+      floatingTexts: this.floatingTexts,
+      expGems: this.expGems,
+      enemies: this.enemies
+    });
 
     // 6. Cập nhật Đạn ma thuật & Kiểm tra va chạm qua Spatial Grid
     for (let i = this.projectiles.length - 1; i >= 0; i--) {
@@ -166,6 +173,9 @@ export class GameEngine {
         const dist = Math.hypot(proj.x - enemy.x, proj.y - enemy.y);
         if (dist <= proj.radius + enemy.radius) {
           proj.hitEnemies.add(enemy.id);
+          // Kích hoạt hiệu ứng va chạm (ví dụ IceArrow làm chậm quái vật)
+          proj.onHit(enemy);
+
           enemy.takeDamage(
             proj.damage,
             proj.x,
@@ -305,8 +315,11 @@ export class GameEngine {
   private handleLevelUp() {
     this.pause();
 
-    // Tạo ngẫu nhiên 3 thẻ nâng cấp
-    const allChoices: UpgradeCard[] = [
+    // Lấy các thẻ nâng cấp / mở khóa phép thuật từ SpellManager
+    const spellCards = this.spellManager.getAvailableUpgradeCards();
+
+    // Danh sách thẻ nâng cấp chỉ số cơ bản
+    const statCards: UpgradeCard[] = [
       {
         id: 'dmg_up',
         title: 'Tăng Sát Thương Phép',
@@ -327,8 +340,8 @@ export class GameEngine {
       },
       {
         id: 'proj_count_up',
-        title: 'Thêm 1 Tia Ma Thuật',
-        description: 'Mỗi lần tấn công bắn thêm +1 tia đạn.',
+        title: 'Thêm 1 Tia Đạn Ma Pháp',
+        description: 'Mỗi lần tấn công của đạn cơ bản bắn thêm +1 tia đạn.',
         rarity: 'EPIC',
         iconName: 'Wand2',
         type: 'PROJECTILES',
@@ -365,6 +378,8 @@ export class GameEngine {
         }
       }
     ];
+
+    const allChoices: UpgradeCard[] = [...spellCards, ...statCards];
 
     // Xáo trộn và lấy 3 thẻ ngẫu nhiên
     const shuffled = [...allChoices].sort(() => Math.random() - 0.5);
@@ -425,7 +440,7 @@ export class GameEngine {
     // Vẽ Người chơi
     this.player.draw(ctx, camera.x, camera.y);
 
-    // Vẽ Đạn ma thuật
+    // Vẽ Đạn ma thuật (Bao gồm cả IceArrow kế thừa Projectile)
     for (const proj of this.projectiles) {
       if (camera.isVisible(proj.x, proj.y, proj.radius)) {
         proj.draw(ctx, camera.x, camera.y);

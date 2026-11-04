@@ -30,7 +30,7 @@ export interface UpgradeCard {
   description: string;
   rarity: UpgradeRarity;
   iconName: string;
-  type: 'DAMAGE' | 'ATTACK_SPEED' | 'MOVE_SPEED' | 'MAX_HP' | 'PROJECTILES' | 'MAGNET';
+  type: 'DAMAGE' | 'ATTACK_SPEED' | 'MOVE_SPEED' | 'MAX_HP' | 'PROJECTILES' | 'MAGNET' | 'SPELL';
   apply: (stats: PlayerStats) => void;
 }
 

@@ -1,52 +1,93 @@
-import { Player } from '../entities/Player';
-import { Enemy } from '../entities/Enemy';
-import { Projectile } from '../entities/Projectile';
+import type { Player } from '../entities/Player';
+import type { UpgradeCard } from '../../types/game';
+import { BaseSpell, type SpellContext } from './BaseSpell';
+import { MagicMissileSpell } from './MagicMissileSpell';
+import { IceArrowSpell } from './IceArrowSpell';
 
 export class SpellManager {
-  private baseCooldown: number = 0.9; // 0.9s mỗi đợt bắn
-  private cooldownTimer: number = 0;
-  private baseDamage: number = 22;
+  public spells: Map<string, BaseSpell> = new Map();
 
-  update(deltaTime: number, player: Player, enemies: Enemy[], projectiles: Projectile[]) {
-    // Tốc độ bắn ảnh hưởng bởi attackSpeedMultiplier
-    const actualCooldown = Math.max(0.2, this.baseCooldown / player.stats.attackSpeedMultiplier);
-    this.cooldownTimer += deltaTime;
+  constructor() {
+    this.initDefaultSpells();
+  }
 
-    if (this.cooldownTimer >= actualCooldown) {
-      this.cooldownTimer = 0;
-      this.castMagicMissiles(player, enemies, projectiles);
+  /**
+   * Khởi tạo bộ kỹ năng ban đầu
+   */
+  public initDefaultSpells() {
+    this.spells.clear();
+
+    // 1. Phép thuật khởi đầu của người chơi (Level 1)
+    const magicMissile = new MagicMissileSpell(1);
+    this.spells.set(magicMissile.id, magicMissile);
+
+    // 2. Mũi tên băng (Level 0 - chưa mở khóa, chờ nhặt được khi lên cấp)
+    const iceArrow = new IceArrowSpell(0);
+    this.spells.set(iceArrow.id, iceArrow);
+  }
+
+  getSpell(id: string): BaseSpell | undefined {
+    return this.spells.get(id);
+  }
+
+  getAllSpells(): BaseSpell[] {
+    return Array.from(this.spells.values());
+  }
+
+  getActiveSpells(): BaseSpell[] {
+    return this.getAllSpells().filter(spell => spell.isUnlocked);
+  }
+
+  /**
+   * Cập nhật toàn bộ các phép thuật đang kích hoạt trong vòng lặp game loop 60 FPS
+   */
+  update(deltaTime: number, player: Player, context: SpellContext) {
+    for (const spell of this.spells.values()) {
+      spell.update(deltaTime, player, context);
     }
   }
 
-  private castMagicMissiles(player: Player, enemies: Enemy[], projectiles: Projectile[]) {
-    if (enemies.length === 0) return;
+  /**
+   * Tự động sinh danh sách thẻ nâng cấp phép thuật (Mở khóa hoặc Thăng cấp Level 1 -> 5)
+   * cho cửa sổ Level Up Modal của React UI.
+   */
+  getAvailableUpgradeCards(): UpgradeCard[] {
+    const cards: UpgradeCard[] = [];
 
-    // Sắp xếp quái theo khoảng cách gần nhất
-    const sorted = enemies
-      .map(e => ({
-        enemy: e,
-        distSq: (e.x - player.x) ** 2 + (e.y - player.y) ** 2
-      }))
-      .filter(item => item.distSq <= 600 ** 2) // Tầm bắn 600px
-      .sort((a, b) => a.distSq - b.distSq);
+    for (const spell of this.spells.values()) {
+      if (spell.isMaxLevel) continue;
 
-    if (sorted.length === 0) return;
-
-    const count = player.stats.projectileCount;
-    const finalDamage = this.baseDamage * player.stats.damageMultiplier;
-
-    for (let i = 0; i < count; i++) {
-      // Phân chia đạn vào các quái gần nhất hoặc dồn vào quái gần nhất nếu ít quái
-      const target = sorted[i % sorted.length].enemy;
-
-      // Độ lệch nhẹ giữa các tia nếu bắn nhiều đạn
-      const spread = (i - (count - 1) / 2) * 16;
-      const targetX = target.x + (Math.random() - 0.5) * spread;
-      const targetY = target.y + (Math.random() - 0.5) * spread;
-
-      projectiles.push(
-        new Projectile(player.x, player.y, targetX, targetY, finalDamage, 0)
-      );
+      if (!spell.isUnlocked) {
+        // Thẻ mở khóa kỹ năng mới
+        cards.push({
+          id: `unlock_${spell.id}`,
+          title: `Học Kỹ Năng: ${spell.name}`,
+          description: spell.getNextUpgradeDescription(),
+          rarity: 'RARE',
+          iconName: spell.iconName,
+          type: 'SPELL',
+          apply: () => {
+            spell.upgrade();
+          }
+        });
+      } else {
+        // Thẻ nâng cấp kỹ năng hiện có
+        const nextLv = spell.level + 1;
+        const rarity = nextLv === spell.maxLevel ? 'LEGENDARY' : nextLv >= 4 ? 'EPIC' : 'RARE';
+        cards.push({
+          id: `upgrade_${spell.id}_lv${nextLv}`,
+          title: `${spell.name} (Cấp ${nextLv})`,
+          description: spell.getNextUpgradeDescription(),
+          rarity,
+          iconName: spell.iconName,
+          type: 'SPELL',
+          apply: () => {
+            spell.upgrade();
+          }
+        });
+      }
     }
+
+    return cards;
   }
 }
